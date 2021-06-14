@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/reminder-dapp-poc/static/css/main.8c8b27cf.chunk.css",
+    "main.js": "/reminder-dapp-poc/static/js/main.092df89b.chunk.js",
+    "main.js.map": "/reminder-dapp-poc/static/js/main.092df89b.chunk.js.map",
+    "runtime-main.js": "/reminder-dapp-poc/static/js/runtime-main.99184277.js",
+    "runtime-main.js.map": "/reminder-dapp-poc/static/js/runtime-main.99184277.js.map",
+    "static/js/2.5a7dfa90.chunk.js": "/reminder-dapp-poc/static/js/2.5a7dfa90.chunk.js",
+    "static/js/2.5a7dfa90.chunk.js.map": "/reminder-dapp-poc/static/js/2.5a7dfa90.chunk.js.map",
+    "static/js/3.f9d28129.chunk.js": "/reminder-dapp-poc/static/js/3.f9d28129.chunk.js",
+    "static/js/3.f9d28129.chunk.js.map": "/reminder-dapp-poc/static/js/3.f9d28129.chunk.js.map",
+    "index.html": "/reminder-dapp-poc/index.html",
+    "service-worker.js": "/reminder-dapp-poc/service-worker.js",
+    "service-worker.js.map": "/reminder-dapp-poc/service-worker.js.map",
+    "static/css/main.8c8b27cf.chunk.css.map": "/reminder-dapp-poc/static/css/main.8c8b27cf.chunk.css.map",
+    "static/js/2.5a7dfa90.chunk.js.LICENSE.txt": "/reminder-dapp-poc/static/js/2.5a7dfa90.chunk.js.LICENSE.txt",
+    "static/media/logo.103b5fa1.svg": "/reminder-dapp-poc/static/media/logo.103b5fa1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.99184277.js",
+    "static/js/2.5a7dfa90.chunk.js",
+    "static/css/main.8c8b27cf.chunk.css",
+    "static/js/main.092df89b.chunk.js"
+  ]
+}
