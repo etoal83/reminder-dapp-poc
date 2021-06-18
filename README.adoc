@@ -1,4 +1,4 @@
-== Reminder-Dapp (PoC)
+= Reminder-Dapp (PoC)
 
 This is a proof-of-concept project of a decentralized serverless application
 which aims to test an offline-first architecture based on the features below.
