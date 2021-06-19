@@ -7,7 +7,7 @@ const OrbitDB = require('orbit-db');
 
 const OrbitDbHandler = () => {
   const [ipfs, setIpfs] = useState(null);
-  const [orbitdb, setOrbitdb] = useState(null);
+  const [orbitdb, setOrbitdb] = useState<typeof OrbitDB | null>(null);
 
   const initOrbitdb = async () => {
     const ipfs = await IPFS.create();
@@ -28,7 +28,9 @@ const OrbitDbHandler = () => {
       <h1>IPFS and OrbitDB status</h1>
       <p>{ipfs === null ? `IPFS not connected` : `IPFS Connected`}</p>
       <p>
-        {orbitdb === null ? `OrbitDB not instantiated` : `OrbitDB instantiated`}
+        {orbitdb === null
+          ? `OrbitDB not instantiated`
+          : `OrbitDB instantiated: ${orbitdb?.id}`}
       </p>
     </div>
   );

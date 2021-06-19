@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
+    "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "ipfs": "^0.55.4",
