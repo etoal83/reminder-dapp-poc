@@ -1,7 +1,6 @@
 = Reminder-Dapp (PoC)
 
-This is a proof-of-concept project of a decentralized serverless application
-which aims to test an offline-first architecture based on the features below.
+This is a proof-of-concept project of a decentralized serverless application which aims to test an offline-first architecture based on the features below.
 
 * Progressive Web App (PWA): Asset caching and push notification
 * OrbitDB: peer-to-peer (P2P) decentralized data storage and synchronization
