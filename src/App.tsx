@@ -8,6 +8,7 @@ const OrbitDB = require('orbit-db');
 const OrbitDbHandler = () => {
   const [ipfs, setIpfs] = useState(null);
   const [orbitdb, setOrbitdb] = useState<typeof OrbitDB | null>(null);
+  const [stores, setStores] = useState<Array<any>>([]);
 
   const initOrbitdb = async () => {
     // --- Create an IPFS node ---
@@ -25,11 +26,25 @@ const OrbitDbHandler = () => {
     const orbitdb = await OrbitDB.createInstance(ipfs);
     setOrbitdb(orbitdb);
     console.log('OrbitDB ready');
+
+    const defaultOptions = {
+      accessController: {
+        write: [orbitdb.identity.id],
+      },
+    };
+    const docStoreOption = {
+      ...defaultOptions,
+      indexBy: 'hash',
+    };
+    const pieces = await orbitdb.docstore('pieces', docStoreOption);
+    setStores((prevStores) => [...prevStores, pieces]);
   };
 
   useEffect(() => {
     initOrbitdb();
   }, []);
+
+  const storeList = stores.map((store) => store.id);
 
   return (
     <div>
@@ -40,6 +55,7 @@ const OrbitDbHandler = () => {
           ? `OrbitDB not instantiated`
           : `OrbitDB instantiated: ${orbitdb?.id}`}
       </p>
+      <p>Datastores: {storeList}</p>
     </div>
   );
 };
