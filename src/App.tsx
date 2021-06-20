@@ -10,6 +10,8 @@ const OrbitDbHandler = () => {
   const [orbitdb, setOrbitdb] = useState<typeof OrbitDB | null>(null);
 
   const initOrbitdb = async () => {
+    // --- Create an IPFS node ---
+    // This node works locally and is not connected to any peers so far.
     const ipfs = await IPFS.create({
       EXPERIMENTAL: {
         pubsub: true,
@@ -18,6 +20,8 @@ const OrbitDbHandler = () => {
     setIpfs(ipfs);
     console.log('IPFS ready');
 
+    // --- Create an OrbitDB instance ---
+    // It loads an OrbitDB object into memory, ready to create datastores.
     const orbitdb = await OrbitDB.createInstance(ipfs);
     setOrbitdb(orbitdb);
     console.log('OrbitDB ready');
