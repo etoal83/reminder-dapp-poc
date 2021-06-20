@@ -10,7 +10,11 @@ const OrbitDbHandler = () => {
   const [orbitdb, setOrbitdb] = useState<typeof OrbitDB | null>(null);
 
   const initOrbitdb = async () => {
-    const ipfs = await IPFS.create();
+    const ipfs = await IPFS.create({
+      EXPERIMENTAL: {
+        pubsub: true,
+      },
+    });
     setIpfs(ipfs);
     console.log('IPFS ready');
 
