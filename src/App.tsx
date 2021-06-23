@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
+import OrbitDB from 'orbit-db';
+import KeyValueStore from 'orbit-db-kvstore';
 import './App.css';
 
 const IPFS = require('ipfs');
-const OrbitDB = require('orbit-db');
 
 const OrbitDbHandler = () => {
   const [ipfs, setIpfs] = useState(null);
-  const [orbitdb, setOrbitdb] = useState<typeof OrbitDB | null>(null);
-  const [stores, setStores] = useState<Array<any>>([]);
+  const [orbitdb, setOrbitdb] = useState<OrbitDB | null>(null);
+  const [store, setStore] = useState<KeyValueStore<any> | null>(null);
 
   const initOrbitdb = async () => {
     // --- Create an IPFS node ---
@@ -27,35 +27,29 @@ const OrbitDbHandler = () => {
     setOrbitdb(orbitdb);
     console.log('OrbitDB ready');
 
-    const defaultOptions = {
-      accessController: {
-        write: [orbitdb.identity.id],
-      },
-    };
-    const docStoreOption = {
-      ...defaultOptions,
-      indexBy: 'hash',
-    };
-    const pieces = await orbitdb.docstore('pieces', docStoreOption);
-    setStores((prevStores) => [...prevStores, pieces]);
+    const reminders = await orbitdb.kvstore('reminders');
+    await reminders.load();
+    setStore(reminders);
   };
 
   useEffect(() => {
     initOrbitdb();
   }, []);
 
-  const storeList = stores.map((store) => store.id);
-
   return (
     <div>
-      <h1>IPFS and OrbitDB status</h1>
+      <h1>dReminder</h1>
+      <h2>IPFS and OrbitDB Status</h2>
       <p>{ipfs === null ? `IPFS not connected` : `IPFS Connected`}</p>
       <p>
         {orbitdb === null
           ? `OrbitDB not instantiated`
           : `OrbitDB instantiated: ${orbitdb?.id}`}
       </p>
-      <p>Datastores: {storeList}</p>
+      <h2>Datastores</h2>
+      <p>
+        {store?.address.root} / {store?.address.path}
+      </p>
     </div>
   );
 };
@@ -64,20 +58,6 @@ function App() {
   return (
     <div className="App">
       <OrbitDbHandler />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
     </div>
   );
 }
