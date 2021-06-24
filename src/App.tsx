@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import OrbitDB from 'orbit-db';
 import KeyValueStore from 'orbit-db-kvstore';
 import './App.css';
 
 const IPFS = require('ipfs');
 
-const OrbitDbHandler = () => {
+const IpfsContext = React.createContext(null);
+const OrbitdbContext = React.createContext<OrbitDB | null>(null);
+
+interface OrbitdbProps {
+  children?: React.ReactChild;
+}
+
+const OrbitdbConnection: React.FC<OrbitdbProps> = ({ children }) => {
   const [ipfs, setIpfs] = useState(null);
   const [orbitdb, setOrbitdb] = useState<OrbitDB | null>(null);
-  const [store, setStore] = useState<KeyValueStore<any> | null>(null);
 
   const initOrbitdb = async () => {
     // --- Create an IPFS node ---
@@ -26,15 +32,39 @@ const OrbitDbHandler = () => {
     const orbitdb = await OrbitDB.createInstance(ipfs);
     setOrbitdb(orbitdb);
     console.log('OrbitDB ready');
-
-    const reminders = await orbitdb.kvstore('reminders');
-    await reminders.load();
-    setStore(reminders);
   };
 
   useEffect(() => {
     initOrbitdb();
   }, []);
+
+  return (
+    <IpfsContext.Provider value={ipfs}>
+      <OrbitdbContext.Provider value={orbitdb}>
+        {children}
+      </OrbitdbContext.Provider>
+    </IpfsContext.Provider>
+  );
+};
+
+const ReminderApp: React.FC<{}> = () => {
+  const ipfs = useContext(IpfsContext);
+  const orbitdb = useContext(OrbitdbContext);
+  const [store, setStore] =
+    useState<KeyValueStore<object | unknown> | null>(null);
+
+  const initStore = async () => {
+    if (orbitdb === null) return;
+    if (store !== null) return;
+
+    const kvstore = await orbitdb.kvstore('reminders');
+    await kvstore.load();
+    setStore(kvstore);
+  };
+
+  useEffect(() => {
+    initStore();
+  }, [orbitdb]);
 
   return (
     <div>
@@ -57,7 +87,9 @@ const OrbitDbHandler = () => {
 function App() {
   return (
     <div className="App">
-      <OrbitDbHandler />
+      <OrbitdbConnection>
+        <ReminderApp />
+      </OrbitdbConnection>
     </div>
   );
 }
