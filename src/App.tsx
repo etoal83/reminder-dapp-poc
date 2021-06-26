@@ -14,6 +14,7 @@ const ReminderApp: React.FC<{}> = () => {
   const orbitdb = useContext<OrbitDB | null>(OrbitdbContext);
   const [store, setStore] =
     useState<KeyValueStore<object | unknown> | null>(null);
+  const [reminders, setReminders] = useState<object>({});
 
   const initStore = async () => {
     if (orbitdb === null) return;
@@ -24,9 +25,42 @@ const ReminderApp: React.FC<{}> = () => {
     setStore(kvstore);
   };
 
+  const getAllReminders = () => {
+    if (store === null) return;
+
+    const records = store.all;
+    setReminders(records);
+    console.log(records);
+  };
+
+  const putRandomReminder = async () => {
+    if (store === null) return;
+
+    const messages = ['Wake up', 'Lunch time', 'Good night'];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    const pickedMessage = messages[randomIndex];
+    const now = new Date();
+    await store.put(pickedMessage, {
+      datetime: now.setMinutes(now.getMinutes() + 3),
+    });
+    console.log(store.get(pickedMessage));
+  };
+
+  const reminderItems = Object.entries(reminders).map((key, value) => {
+    return (
+      <li>
+        {key.toString()} : {value}
+      </li>
+    );
+  });
+
   useEffect(() => {
     initStore();
   }, [orbitdb]);
+
+  useEffect(() => {
+    getAllReminders();
+  });
 
   return (
     <div>
@@ -42,6 +76,9 @@ const ReminderApp: React.FC<{}> = () => {
       <p>
         {store?.address.root} / {store?.address.path}
       </p>
+      <h2>Records</h2>
+      <ul>{reminderItems}</ul>
+      <button onClick={putRandomReminder}>Set a random reminder</button>
     </div>
   );
 };
