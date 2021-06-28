@@ -57,6 +57,12 @@ const ReminderApp: React.FC<{}> = () => {
     setNewReminder(event.target.value);
   };
 
+  const destroyReminder = async (key: string) => {
+    if (store === null) return;
+
+    await store.del(key);
+  };
+
   const putRandomReminder = async () => {
     if (store === null) return;
 
@@ -73,7 +79,8 @@ const ReminderApp: React.FC<{}> = () => {
   const reminderItems = Object.entries(reminders).map((key, value) => {
     return (
       <li>
-        {key.toString()} : {value}
+        {key[0]} : {key[1].datetime}{' '}
+        <button onClick={() => destroyReminder(key[0])}>Delete</button>
       </li>
     );
   });
