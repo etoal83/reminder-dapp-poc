@@ -53,7 +53,7 @@ const ReminderApp: React.FC<{}> = () => {
         datetime: now.setMinutes(now.getMinutes() + 3),
       });
       setNewReminder({ message: '', datetime: null });
-      console.log(store.get(val));
+      console.log(store.get(uuid));
     }
   };
 
