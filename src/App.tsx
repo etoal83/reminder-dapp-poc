@@ -15,6 +15,7 @@ const ReminderApp: React.FC<{}> = () => {
   const [store, setStore] =
     useState<KeyValueStore<object | unknown> | null>(null);
   const [reminders, setReminders] = useState<object>({});
+  const [newReminder, setNewReminder] = useState('');
 
   const initStore = async () => {
     if (orbitdb === null) return;
@@ -30,7 +31,30 @@ const ReminderApp: React.FC<{}> = () => {
 
     const records = store.all;
     setReminders(records);
-    console.log(records);
+  };
+
+  const handleNewReminderKeyDown = async (event: React.KeyboardEvent) => {
+    if (store === null) return;
+    if (event.key !== 'Enter') return;
+
+    event.preventDefault();
+
+    const val = newReminder.trim();
+
+    if (val) {
+      const now = new Date();
+      await store.put(val, {
+        datetime: now.setMinutes(now.getMinutes() + 3),
+      });
+      setNewReminder('');
+      console.log(store.get(val));
+    }
+  };
+
+  const handleNewReminderChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNewReminder(event.target.value);
   };
 
   const putRandomReminder = async () => {
@@ -77,6 +101,12 @@ const ReminderApp: React.FC<{}> = () => {
         {store?.address.root} / {store?.address.path}
       </p>
       <h2>Records</h2>
+      <input
+        className="new-reminder"
+        value={newReminder}
+        onChange={handleNewReminderChange}
+        onKeyDown={handleNewReminderKeyDown}
+      />
       <ul>{reminderItems}</ul>
       <button onClick={putRandomReminder}>Set a random reminder</button>
     </div>
