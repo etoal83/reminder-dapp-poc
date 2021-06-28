@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import OrbitDB from 'orbit-db';
 import KeyValueStore from 'orbit-db-kvstore';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
 import {
@@ -15,7 +16,10 @@ const ReminderApp: React.FC<{}> = () => {
   const [store, setStore] =
     useState<KeyValueStore<object | unknown> | null>(null);
   const [reminders, setReminders] = useState<object>({});
-  const [newReminder, setNewReminder] = useState('');
+  const [newReminder, setNewReminder] = useState({
+    message: '',
+    datetime: null,
+  });
 
   const initStore = async () => {
     if (orbitdb === null) return;
@@ -39,14 +43,16 @@ const ReminderApp: React.FC<{}> = () => {
 
     event.preventDefault();
 
-    const val = newReminder.trim();
+    const val = newReminder.message.trim();
 
     if (val) {
+      const uuid = uuidv4();
       const now = new Date();
-      await store.put(val, {
+      await store.put(uuid, {
+        message: val,
         datetime: now.setMinutes(now.getMinutes() + 3),
       });
-      setNewReminder('');
+      setNewReminder({ message: '', datetime: null });
       console.log(store.get(val));
     }
   };
@@ -54,7 +60,7 @@ const ReminderApp: React.FC<{}> = () => {
   const handleNewReminderChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setNewReminder(event.target.value);
+    setNewReminder({ ...newReminder, message: event.target.value });
   };
 
   const destroyReminder = async (key: string) => {
@@ -79,7 +85,7 @@ const ReminderApp: React.FC<{}> = () => {
   const reminderItems = Object.entries(reminders).map((key, value) => {
     return (
       <li>
-        {key[0]} : {key[1].datetime}{' '}
+        {key[0]}: {key[1].message} / {key[1].datetime}{' '}
         <button onClick={() => destroyReminder(key[0])}>Delete</button>
       </li>
     );
@@ -110,7 +116,7 @@ const ReminderApp: React.FC<{}> = () => {
       <h2>Records</h2>
       <input
         className="new-reminder"
-        value={newReminder}
+        value={newReminder.message}
         onChange={handleNewReminderChange}
         onKeyDown={handleNewReminderKeyDown}
       />
