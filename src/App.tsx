@@ -69,19 +69,6 @@ const ReminderApp: React.FC<{}> = () => {
     await store.del(key);
   };
 
-  const putRandomReminder = async () => {
-    if (store === null) return;
-
-    const messages = ['Wake up', 'Lunch time', 'Good night'];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    const pickedMessage = messages[randomIndex];
-    const now = new Date();
-    await store.put(pickedMessage, {
-      datetime: now.setMinutes(now.getMinutes() + 3),
-    });
-    console.log(store.get(pickedMessage));
-  };
-
   const reminderItems = Object.entries(reminders).map((key, value) => {
     return (
       <li>
@@ -121,7 +108,6 @@ const ReminderApp: React.FC<{}> = () => {
         onKeyDown={handleNewReminderKeyDown}
       />
       <ul>{reminderItems}</ul>
-      <button onClick={putRandomReminder}>Set a random reminder</button>
     </div>
   );
 };
