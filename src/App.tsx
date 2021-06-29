@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { HashRouter, Route, Switch, Link } from 'react-router-dom';
 import OrbitDB from 'orbit-db';
 import KeyValueStore from 'orbit-db-kvstore';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,8 +11,25 @@ import {
   OrbitdbConnection,
 } from './OrbitdbContext';
 
-const ReminderApp: React.FC<{}> = () => {
+const About: React.FC<{}> = () => {
   const ipfs = useContext(IpfsContext);
+  const orbitdb = useContext<OrbitDB | null>(OrbitdbContext);
+
+  return (
+    <div className="system-info">
+      <h2>IPFS and OrbitDB Status</h2>
+      <p>{ipfs === null ? `IPFS not connected` : `IPFS Connected`}</p>
+      <p>
+        {orbitdb === null
+          ? `OrbitDB not instantiated`
+          : `OrbitDB instantiated: ${orbitdb?.id}`}
+      </p>
+      <Link to="/">Back to app</Link>
+    </div>
+  );
+};
+
+const ReminderApp: React.FC<{}> = () => {
   const orbitdb = useContext<OrbitDB | null>(OrbitdbContext);
   const [store, setStore] =
     useState<KeyValueStore<object | unknown> | null>(null);
@@ -71,7 +89,7 @@ const ReminderApp: React.FC<{}> = () => {
 
   const reminderItems = Object.entries(reminders).map((key, value) => {
     return (
-      <li>
+      <li key={key[0]}>
         {key[0]}: {key[1].message} / {key[1].datetime}{' '}
         <button onClick={() => destroyReminder(key[0])}>Delete</button>
       </li>
@@ -89,14 +107,7 @@ const ReminderApp: React.FC<{}> = () => {
   return (
     <div>
       <h1>dReminder</h1>
-      <h2>IPFS and OrbitDB Status</h2>
-      <p>{ipfs === null ? `IPFS not connected` : `IPFS Connected`}</p>
-      <p>
-        {orbitdb === null
-          ? `OrbitDB not instantiated`
-          : `OrbitDB instantiated: ${orbitdb?.id}`}
-      </p>
-      <h2>Datastores</h2>
+      <h2>Datastore multihash</h2>
       <p>
         {store?.address.root} / {store?.address.path}
       </p>
@@ -108,6 +119,7 @@ const ReminderApp: React.FC<{}> = () => {
         onKeyDown={handleNewReminderKeyDown}
       />
       <ul>{reminderItems}</ul>
+      <Link to="/about">System info</Link>
     </div>
   );
 };
@@ -116,7 +128,13 @@ function App() {
   return (
     <div className="App">
       <OrbitdbConnection>
-        <ReminderApp />
+        <HashRouter>
+          <Switch>
+            <Route exact path="/" component={ReminderApp} />
+            <Route path="/about" component={About} />
+            <Route component={ReminderApp} />
+          </Switch>
+        </HashRouter>
       </OrbitdbConnection>
     </div>
   );
