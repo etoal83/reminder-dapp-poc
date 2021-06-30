@@ -46,8 +46,7 @@ const MasterClock: React.FC<{}> = () => {
         {formatDigits(current.getDate())} ({dayOfWeekStr[current.getDay()]})
       </div>
       <div className="master-clock-time">
-        {formatDigits(current.getHours())} :{' '}
-        {formatDigits(current.getMinutes())} :{' '}
+        {formatDigits(current.getHours())}:{formatDigits(current.getMinutes())}:
         {formatDigits(current.getSeconds())}
       </div>
     </div>
