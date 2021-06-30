@@ -160,11 +160,6 @@ const ReminderApp: React.FC<{}> = () => {
     <div>
       <h1>dReminder</h1>
       <MasterClock />
-      <h2>Datastore multihash</h2>
-      <p>
-        {store?.address.root} / {store?.address.path}
-      </p>
-      <h2>Records</h2>
       <input
         className="new-reminder"
         value={newReminder.message}
@@ -172,6 +167,13 @@ const ReminderApp: React.FC<{}> = () => {
         onKeyDown={handleNewReminderKeyDown}
       />
       <ul>{reminderItems}</ul>
+      <h2>Dev info</h2>
+      <dl>
+        <dt>Datastore multihash</dt>
+        <dd>
+          {store?.address.root} / {store?.address.path}
+        </dd>
+      </dl>
       <Link to="/about">System info</Link>
     </div>
   );
