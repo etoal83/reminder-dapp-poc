@@ -80,6 +80,7 @@ const ReminderApp: React.FC<{}> = () => {
     message: '',
     datetime: null,
   });
+  const [updatedAt, setUpdatedAt] = useState(Date.now());
 
   const initStore = async () => {
     if (orbitdb === null) return;
@@ -88,6 +89,7 @@ const ReminderApp: React.FC<{}> = () => {
     const kvstore = await orbitdb.kvstore('reminders');
     await kvstore.load();
     setStore(kvstore);
+    setUpdatedAt(Date.now());
   };
 
   const getAllReminders = () => {
@@ -113,7 +115,7 @@ const ReminderApp: React.FC<{}> = () => {
         datetime: now.setMinutes(now.getMinutes() + 3),
       });
       setNewReminder({ message: '', datetime: null });
-      console.log(store.get(uuid));
+      setUpdatedAt(Date.now());
     }
   };
 
@@ -127,6 +129,7 @@ const ReminderApp: React.FC<{}> = () => {
     if (store === null) return;
 
     await store.del(key);
+    setUpdatedAt(Date.now());
   };
 
   const formatDigits = (digits: number) => ('0' + digits).slice(-2);
@@ -140,10 +143,9 @@ const ReminderApp: React.FC<{}> = () => {
     const seconds = deadline.getSeconds();
 
     return (
-      <li key={key[0]}>
-        {uuid}: {message} / {formatDigits(hours)}:{formatDigits(minutes)}:
-        {formatDigits(seconds)}{' '}
-        <button onClick={() => destroyReminder(key[0])}>Delete</button>
+      <li id={uuid} key={uuid}>
+        {formatDigits(hours)}:{formatDigits(minutes)}:{formatDigits(seconds)} /{' '}
+        {message} <button onClick={() => destroyReminder(uuid)}>Delete</button>
       </li>
     );
   });
@@ -154,7 +156,7 @@ const ReminderApp: React.FC<{}> = () => {
 
   useEffect(() => {
     getAllReminders();
-  });
+  }, [updatedAt]);
 
   return (
     <div>
