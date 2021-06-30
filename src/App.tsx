@@ -80,7 +80,6 @@ const ReminderApp: React.FC<{}> = () => {
   const [newReminder, setNewReminder] = useState({
     message: '',
     datetime: null,
-    overdue: false,
   });
 
   const initStore = async () => {
@@ -113,9 +112,8 @@ const ReminderApp: React.FC<{}> = () => {
       await store.put(uuid, {
         message: val,
         datetime: now.setMinutes(now.getMinutes() + 3),
-        overdue: false,
       });
-      setNewReminder({ message: '', datetime: null, overdue: false });
+      setNewReminder({ message: '', datetime: null });
       console.log(store.get(uuid));
     }
   };
