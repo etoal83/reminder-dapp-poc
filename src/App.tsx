@@ -61,7 +61,7 @@ const About: React.FC<{}> = () => {
       <p>
         {orbitdb === null
           ? `OrbitDB not instantiated`
-          : `OrbitDB instantiated: ${orbitdb?.id}`}
+          : `OrbitDB CID: ${orbitdb?.id}`}
       </p>
       <Link to="/">Back to app</Link>
     </div>
