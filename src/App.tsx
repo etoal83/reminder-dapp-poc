@@ -11,6 +11,45 @@ import {
   OrbitdbConnection,
 } from './OrbitdbContext';
 
+const MasterClock: React.FC<{}> = () => {
+  const [current, setCurrent] = useState(new Date());
+  const dayOfWeekStr: Array<string> = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+  ];
+
+  useEffect(() => {
+    const timeoutId: number = window.setTimeout(
+      () => setCurrent(new Date()),
+      1000
+    );
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [current]);
+
+  const formatDigits = (digits: number) => ('0' + digits).slice(-2);
+
+  return (
+    <div className="master-clock">
+      <div className="master-clock-date">
+        {current.getFullYear()} / {formatDigits(current.getMonth() + 1)} /{' '}
+        {formatDigits(current.getDate())} ({dayOfWeekStr[current.getDay()]})
+      </div>
+      <div className="master-clock-time">
+        {formatDigits(current.getHours())} :{' '}
+        {formatDigits(current.getMinutes())} :{' '}
+        {formatDigits(current.getSeconds())}
+      </div>
+    </div>
+  );
+};
+
 const About: React.FC<{}> = () => {
   const ipfs = useContext(IpfsContext);
   const orbitdb = useContext<OrbitDB | null>(OrbitdbContext);
