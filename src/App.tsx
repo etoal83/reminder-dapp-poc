@@ -10,6 +10,10 @@ import {
   OrbitdbContext,
   OrbitdbConnection,
 } from './OrbitdbContext';
+import {
+  NotificationContext,
+  NotificationPermission,
+} from './NotificationPermissionContext';
 
 const MasterClock: React.FC<{}> = () => {
   const [current, setCurrent] = useState(new Date());
@@ -179,15 +183,17 @@ const ReminderApp: React.FC<{}> = () => {
 function App() {
   return (
     <div className="App">
-      <OrbitdbConnection>
-        <HashRouter>
-          <Switch>
-            <Route exact path="/" component={ReminderApp} />
-            <Route path="/about" component={About} />
-            <Route component={ReminderApp} />
-          </Switch>
-        </HashRouter>
-      </OrbitdbConnection>
+      <NotificationPermission>
+        <OrbitdbConnection>
+          <HashRouter>
+            <Switch>
+              <Route exact path="/" component={ReminderApp} />
+              <Route path="/about" component={About} />
+              <Route component={ReminderApp} />
+            </Switch>
+          </HashRouter>
+        </OrbitdbConnection>
+      </NotificationPermission>
     </div>
   );
 }
