@@ -170,8 +170,6 @@ const ReminderApp: React.FC<{}> = () => {
 
   return (
     <div>
-      <h1>dReminder</h1>
-      <MasterClock />
       <input
         className="new-reminder"
         value={newReminder.message}
@@ -201,6 +199,8 @@ function App() {
       <NotificationPermission>
         <OrbitdbConnection>
           <HashRouter>
+            <h1>dReminder</h1>
+            <MasterClock />
             <Switch>
               <Route exact path="/" component={ReminderApp} />
               <Route path="/about" component={About} />
