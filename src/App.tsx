@@ -86,6 +86,7 @@ const About: React.FC<{}> = () => {
 
 const ReminderApp: React.FC<{}> = () => {
   const orbitdb = useContext<OrbitDB | null>(OrbitdbContext);
+  const { permission } = useContext(NotificationContext);
   const [store, setStore] =
     useState<KeyValueStore<object | unknown> | null>(null);
   const [reminders, setReminders] = useState<object>({});
