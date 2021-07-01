@@ -15,6 +15,19 @@ import {
   NotificationPermission,
 } from './NotificationPermissionContext';
 
+interface Reminder {
+  message: string;
+  datetime: number | null;
+}
+
+const isReminder = (arg: unknown): arg is Reminder => {
+  return (
+    typeof arg === 'object' &&
+    arg !== null &&
+    typeof (arg as Reminder).message === 'string'
+  );
+};
+
 const MasterClock: React.FC<{}> = () => {
   const [current, setCurrent] = useState(new Date());
   const dayOfWeekStr: Array<string> = [
@@ -81,6 +94,8 @@ const ReminderApp: React.FC<{}> = () => {
     datetime: null,
   });
   const [updatedAt, setUpdatedAt] = useState(Date.now());
+  const [queue, setQueue] = useState<Array<any>>([]);
+  const [tick, setTick] = useState(Date.now());
 
   const initStore = async () => {
     if (orbitdb === null) return;
@@ -132,6 +147,64 @@ const ReminderApp: React.FC<{}> = () => {
     setUpdatedAt(Date.now());
   };
 
+  const checkDueReminder = () => {
+    const queuedKeys: Array<any> = [];
+
+    Object.entries(reminders).map((key, _) => {
+      const deadline = new Date(key[1].datetime);
+      const now = new Date();
+
+      const yearEq = deadline.getFullYear() === now.getFullYear();
+      const monthEq = deadline.getMonth() === now.getMonth();
+      const dateEq = deadline.getDate() === now.getDate();
+      const dayOfWeekEq = deadline.getDay() === now.getDay();
+      const hoursEq = deadline.getHours() === now.getHours();
+      const minutesEq = deadline.getMinutes() === now.getMinutes();
+      const secondsEq = deadline.getSeconds() === now.getSeconds();
+
+      if (
+        yearEq &&
+        monthEq &&
+        dateEq &&
+        dayOfWeekEq &&
+        hoursEq &&
+        minutesEq &&
+        secondsEq
+      ) {
+        queuedKeys.push(key[0]);
+      }
+
+      return null;
+    });
+
+    if (queuedKeys.length) {
+      console.log(`keys: ${queuedKeys}`);
+      setQueue((prev) => prev.concat(queuedKeys));
+    }
+  };
+
+  const triggerNotification = () => {
+    if (store === null) return;
+
+    if (queue.length) {
+      const uuid = queue[0];
+      const reminder = store.get(uuid);
+
+      if (!isReminder(reminder)) {
+        console.log(
+          `The reminder ${uuid} does NOT exist so the notification is skipped.`
+        );
+        setQueue((prev) => prev.slice(1));
+        return;
+      }
+
+      const message = reminder.message;
+      new Notification('dReminder', { body: message });
+      setUpdatedAt(Date.now());
+      setQueue((prev) => prev.slice(1));
+    }
+  };
+
   const formatDigits = (digits: number) => ('0' + digits).slice(-2);
 
   const reminderItems = Object.entries(reminders).map((key, _) => {
@@ -167,6 +240,20 @@ const ReminderApp: React.FC<{}> = () => {
   useEffect(() => {
     getAllReminders();
   }, [updatedAt]);
+
+  useEffect(() => {
+    const timeoutId: number = window.setTimeout(() => {
+      checkDueReminder();
+      setTick(Date.now());
+    }, 1000);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [tick]);
+
+  useEffect(() => {
+    triggerNotification();
+  }, [queue]);
 
   return (
     <div>
