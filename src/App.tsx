@@ -134,16 +134,22 @@ const ReminderApp: React.FC<{}> = () => {
 
   const formatDigits = (digits: number) => ('0' + digits).slice(-2);
 
-  const reminderItems = Object.entries(reminders).map((key, value) => {
+  const reminderItems = Object.entries(reminders).map((key, _) => {
     const uuid = key[0];
     const message = key[1].message;
+    const overdue = key[1].datetime < Date.now();
     const deadline = new Date(key[1].datetime);
     const hours = deadline.getHours();
     const minutes = deadline.getMinutes();
     const seconds = deadline.getSeconds();
 
     return (
-      <li id={uuid} key={uuid}>
+      <li
+        key={uuid}
+        style={{
+          textDecoration: overdue ? 'line-through' : 'none',
+        }}
+      >
         {formatDigits(hours)}:{formatDigits(minutes)}:{formatDigits(seconds)} /{' '}
         {message} <button onClick={() => destroyReminder(uuid)}>Delete</button>
       </li>
