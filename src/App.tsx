@@ -156,6 +156,10 @@ const ReminderApp: React.FC<{}> = () => {
     );
   });
 
+  const testNotification = () => {
+    new Notification('dReminder', { body: 'Notification test' });
+  };
+
   useEffect(() => {
     initStore();
   }, [orbitdb]);
@@ -180,6 +184,10 @@ const ReminderApp: React.FC<{}> = () => {
         <dt>Datastore multihash</dt>
         <dd>
           {store?.address.root} / {store?.address.path}
+        </dd>
+        <dt>Notification permission</dt>
+        <dd>
+          {permission} <button onClick={testNotification}>test</button>{' '}
         </dd>
       </dl>
       <Link to="/about">System info</Link>
