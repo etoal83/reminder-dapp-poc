@@ -53,15 +53,14 @@ const MasterClock: React.FC<{}> = () => {
   const formatDigits = (digits: number) => ('0' + digits).slice(-2);
 
   return (
-    <div className="master-clock">
-      <div className="master-clock-date">
-        {current.getFullYear()} / {formatDigits(current.getMonth() + 1)} /{' '}
-        {formatDigits(current.getDate())} ({dayOfWeekStr[current.getDay()]})
-      </div>
-      <div className="master-clock-time">
-        {formatDigits(current.getHours())}:{formatDigits(current.getMinutes())}:
-        {formatDigits(current.getSeconds())}
-      </div>
+    <div
+      className="master-clock"
+      style={{ textAlign: 'center', margin: '1em 0 2em' }}
+    >
+      {current.getFullYear()} / {formatDigits(current.getMonth() + 1)} /{' '}
+      {formatDigits(current.getDate())} ({dayOfWeekStr[current.getDay()]}){' '}
+      {formatDigits(current.getHours())}:{formatDigits(current.getMinutes())}:
+      {formatDigits(current.getSeconds())}
     </div>
   );
 };
@@ -258,15 +257,25 @@ const ReminderApp: React.FC<{}> = () => {
 
   return (
     <div>
-      <input
-        className="new-reminder"
-        value={newReminder.message}
-        placeholder="Enter message"
-        onChange={handleNewReminderChange}
-        onKeyDown={handleNewReminderKeyDown}
-      />
+      <div style={{ textAlign: 'center' }}>
+        <input
+          className="new-reminder"
+          value={newReminder.message}
+          placeholder="Enter message"
+          onChange={handleNewReminderChange}
+          onKeyDown={handleNewReminderKeyDown}
+          style={{
+            width: '80%',
+            padding: '12px 24px',
+            fontSize: '1.6em',
+            border: 'none',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+          }}
+        />
+      </div>
       <ul>{reminderItems}</ul>
-      <h2>Dev info</h2>
+      <h2 style={{ marginTop: '2em' }}>Dev info</h2>
       <dl>
         <dt>Datastore multihash</dt>
         <dd>
@@ -288,7 +297,25 @@ function App() {
       <NotificationPermission>
         <OrbitdbConnection>
           <HashRouter>
-            <h1>dReminder</h1>
+            <div
+              className="app-title"
+              style={{
+                width: '100%',
+              }}
+            >
+              <h1
+                style={{
+                  color: '#61dafb',
+                  fontWeight: 100,
+                  fontSize: '5.5rem',
+                  padding: '0.33em 0 0',
+                  margin: 0,
+                  textAlign: 'center',
+                }}
+              >
+                dReminder
+              </h1>
+            </div>
             <MasterClock />
             <Switch>
               <Route exact path="/" component={ReminderApp} />
