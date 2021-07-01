@@ -261,6 +261,7 @@ const ReminderApp: React.FC<{}> = () => {
       <input
         className="new-reminder"
         value={newReminder.message}
+        placeholder="Enter message"
         onChange={handleNewReminderChange}
         onKeyDown={handleNewReminderKeyDown}
       />
@@ -276,7 +277,7 @@ const ReminderApp: React.FC<{}> = () => {
           {permission} <button onClick={testNotification}>test</button>{' '}
         </dd>
       </dl>
-      <Link to="/about">System info</Link>
+      <Link to="/about">more</Link>
     </div>
   );
 };
